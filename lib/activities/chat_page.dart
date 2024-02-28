@@ -1,3 +1,4 @@
+import 'package:chat_with_ai/services/bard_services.dart';
 import 'package:flutter/material.dart';
 
 class _Mobile extends StatefulWidget {
@@ -10,8 +11,18 @@ class _Mobile extends StatefulWidget {
 class _MobileState extends State<_Mobile> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: Colors.white,
+      body: FutureBuilder(
+          future: BardService().ask('what is google gemini AI'),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+            return Center(child: Text('Data: ${snapshot.data}'));
+          }),
     );
   }
 }
