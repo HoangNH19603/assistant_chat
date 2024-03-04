@@ -1,4 +1,5 @@
 import 'package:chat_with_ai/services/bard_services.dart';
+import 'package:chat_with_ai/widget/message.dart';
 import 'package:flutter/material.dart';
 
 class _Mobile extends StatefulWidget {
@@ -9,21 +10,87 @@ class _Mobile extends StatefulWidget {
 }
 
 class _MobileState extends State<_Mobile> {
+  final List<String> _messages = <String>[];
+
+  Future<void> _askQuestion(String question) async {
+    try {
+      final String response = await BardService().ask(question);
+      setState(() {
+        _messages.add(response);
+      });
+    } catch (e) {
+      setState(() {
+        _messages.add('Error: $e');
+      });
+    }
+  }
+
+  Widget _buildMessage(String message) {
+    return Message(messageText: message);
+  }
+
   @override
   Widget build(BuildContext context) {
+    // return Scaffold(
+    //   backgroundColor: Colors.white,
+    //   body: FutureBuilder(
+    //       future: BardService().ask('what is google gemini AI'),
+    //       builder: (BuildContext context, AsyncSnapshot snapshot) {
+    //         if (snapshot.connectionState == ConnectionState.waiting) {
+    //           return const Center(child: CircularProgressIndicator());
+    //         } else if (snapshot.hasError) {
+    //           return Center(child: Text('Error: ${snapshot.error}'));
+    //         }
+    //         _messages.add(snapshot.data);
+    //         return ListView.builder(
+    //             itemCount: _messages.length,
+    //             itemBuilder: (context, index) {
+    //               return Message(messageText: _messages[index]);
+    //             });
+    //       }),
+    // );
     return Scaffold(
       backgroundColor: Colors.white,
-      body: FutureBuilder(
-          future: BardService().ask('what is google gemini AI'),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            }
-            return Center(child: Text('Data: ${snapshot.data}'));
-          }),
+      body: _messages.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : CustomScrollView(
+              slivers: [
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      return _buildMessage(_messages[index]);
+                    },
+                    childCount: _messages.length,
+                  ),
+                ),
+              ],
+            ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          const String question = 'What is Google Gemini AI?';
+          await _askQuestion(question);
+        },
+        child: const Icon(Icons.question_answer),
+      ),
     );
+    // return Scaffold(
+    //   backgroundColor: Colors.white,
+    //   body: _messages.isEmpty
+    //       ? const Center(child: CircularProgressIndicator())
+    //       : ListView.builder(
+    //           itemCount: _messages.length,
+    //           itemBuilder: (context, index) {
+    //             return _buildMessage(_messages[index]);
+    //           },
+    //         ),
+    //   floatingActionButton: FloatingActionButton(
+    //     onPressed: () async {
+    //       const String question = 'What is Google Gemini AI?';
+    //       await _askQuestion(question);
+    //     },
+    //     child: const Icon(Icons.question_answer),
+    //   ),
+    // );
   }
 }
 
@@ -59,14 +126,14 @@ class _DesktopState extends State<_Desktop> {
   }
 }
 
-class ChatPage extends StatefulWidget {
-  const ChatPage({super.key});
+class ChatScreen extends StatefulWidget {
+  const ChatScreen({super.key});
 
   @override
-  State<ChatPage> createState() => ChatPageState();
+  State<ChatScreen> createState() => _ChatScreenState();
 }
 
-class ChatPageState extends State<ChatPage> {
+class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: ((context, constraints) {
