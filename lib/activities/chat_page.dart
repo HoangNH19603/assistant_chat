@@ -1,4 +1,5 @@
 import 'package:chat_with_ai/services/bard_services.dart';
+import 'package:chat_with_ai/widget/input_form.dart';
 import 'package:chat_with_ai/widget/message.dart';
 import 'package:flutter/material.dart';
 
@@ -52,7 +53,7 @@ class _MobileState extends State<_Mobile> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: _messages.isEmpty
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: Text('Don\'t have anything!'))
           : CustomScrollView(
               slivers: [
                 SliverList(
@@ -65,13 +66,14 @@ class _MobileState extends State<_Mobile> {
                 ),
               ],
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          const String question = 'What is Google Gemini AI?';
-          await _askQuestion(question);
-        },
-        child: const Icon(Icons.question_answer),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () async {
+      //     const String question = 'What is Google Gemini AI?';
+      //     await _askQuestion(question);
+      //   },
+      //   child: const Icon(Icons.question_answer),
+      // ),
+      bottomNavigationBar: InputField(callback: _askQuestion),
     );
     // return Scaffold(
     //   backgroundColor: Colors.white,

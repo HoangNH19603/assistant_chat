@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-typedef callback = void Function(String value);
+typedef Callback = void Function(String value);
 
 class InputField extends StatefulWidget {
-  const InputField({super.key});
+  final Callback callback;
+  const InputField({super.key, required this.callback});
 
   @override
   State<InputField> createState() => _InputFieldState();
@@ -20,16 +21,49 @@ class _InputFieldState extends State<InputField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: _controller,
-      decoration: const InputDecoration(hintText: 'Enter some text'),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter some text';
-        }
-        return null;
-      },
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextFormField(
+              controller: _controller,
+              decoration: const InputDecoration(hintText: 'Enter a message'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a message';
+                }
+                return null;
+              },
+              onFieldSubmitted: (value) {
+                widget.callback(_controller.text);
+                _controller.clear();
+              },
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.send),
+            onPressed: () {
+              if (_controller.text.isNotEmpty) {
+                widget.callback(_controller.text);
+                _controller.clear();
+              }
+            },
+          ),
+        ],
+      ),
     );
+    // return TextFormField(
+    //   controller: _controller,
+    //   decoration: const InputDecoration(hintText: 'Enter some text'),
+    //   validator: (value) {
+    //     if (value == null || value.isEmpty) {
+    //       return 'Please enter some text';
+    //     }
+    //     return null;
+    //   },
+    //   onFieldSubmitted: (value) => widget.callback(value),
+    // );
   }
 
   @override
