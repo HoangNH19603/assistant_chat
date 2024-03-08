@@ -11,23 +11,27 @@ class _Mobile extends StatefulWidget {
 }
 
 class _MobileState extends State<_Mobile> {
-  final List<String> _messages = <String>[];
+  // final List<String> _myTypes = <String>[];
+  final List<Message> _messages = <Message>[];
+
+  // void _submitText(String content) => setState(() => _messages.add(Message.me(content)));
 
   Future<void> _askQuestion(String question) async {
+    setState(() => _messages.add(Message.me(question)));
     try {
       final String response = await BardService().ask(question);
       setState(() {
-        _messages.add(response);
+        _messages.add(Message.bot(response));
       });
     } catch (e) {
+        _messages.add(Message.bot('Error: $e'));
       setState(() {
-        _messages.add('Error: $e');
       });
     }
   }
 
   Widget _buildMessage(String message) {
-    return Message(messageText: message);
+    return Message(content: message);
   }
 
   @override
@@ -46,7 +50,7 @@ class _MobileState extends State<_Mobile> {
     //         return ListView.builder(
     //             itemCount: _messages.length,
     //             itemBuilder: (context, index) {
-    //               return Message(messageText: _messages[index]);
+    //               return Message(content: _messages[index]);
     //             });
     //       }),
     // );
@@ -59,7 +63,8 @@ class _MobileState extends State<_Mobile> {
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
-                      return _buildMessage(_messages[index]);
+                      // return _buildMessage(_messages[index]);
+                      return _messages[index];
                     },
                     childCount: _messages.length,
                   ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 typedef Callback = void Function(String value);
 
 class InputField extends StatefulWidget {
+  // final Callback onSubmit;
   final Callback callback;
   const InputField({super.key, required this.callback});
 
@@ -36,6 +37,7 @@ class _InputFieldState extends State<InputField> {
                 return null;
               },
               onFieldSubmitted: (value) {
+                // widget.onSubmit(_controller.text);
                 widget.callback(_controller.text);
                 _controller.clear();
               },
@@ -45,6 +47,7 @@ class _InputFieldState extends State<InputField> {
             icon: const Icon(Icons.send),
             onPressed: () {
               if (_controller.text.isNotEmpty) {
+                // widget.onSubmit(_controller.text);
                 widget.callback(_controller.text);
                 _controller.clear();
               }
