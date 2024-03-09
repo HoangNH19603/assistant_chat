@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class Message extends StatelessWidget {
   final String content;
@@ -22,23 +21,43 @@ class Message extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      alignment: fromMe ? Alignment.centerRight : Alignment.centerLeft,
+      child: _MessageBubble(fromMe: fromMe, content: content),
+    );
+  }
+}
+
+class _MessageBubble extends StatelessWidget {
+  const _MessageBubble({
+    required this.fromMe,
+    required this.content,
+  });
+
+  final bool fromMe;
+  final String content;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
       padding: const EdgeInsets.all(10),
       margin: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: fromMe
+            ? const BorderRadius.only(
+                topLeft: Radius.circular(15), topRight: Radius.circular(15), bottomLeft: Radius.circular(15), bottomRight: Radius.zero)
+            : const BorderRadius.only(
+                topLeft: Radius.circular(15),
+                topRight: Radius.circular(15),
+                bottomRight: Radius.circular(15),
+                bottomLeft: Radius.zero),
         color: fromMe ? Colors.blue[600] : Colors.grey[300],
       ),
-      child: Flex(
-        direction: Axis.horizontal,
-        mainAxisAlignment: fromMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-        children: [Text(
-          content,
-          style: TextStyle(
-            fontSize: 16.0,
-            color: fromMe ? Colors.white : Colors.black,
-          ),
-          // overflow: TextOverflow.ellipsis,
-        ),]
+      child: Text(
+        content,
+        style: TextStyle(
+          fontSize: 16.0,
+          color: fromMe ? Colors.white : Colors.black,
+        ),
       ),
     );
   }

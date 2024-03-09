@@ -41,6 +41,8 @@ class _InputFieldState extends State<InputField> {
                 widget.callback(_controller.text);
                 _controller.clear();
               },
+              // maxLines: null,
+              // keyboardType: TextInputType.multiline,
             ),
           ),
           IconButton(

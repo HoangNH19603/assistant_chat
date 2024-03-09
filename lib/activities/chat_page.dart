@@ -30,9 +30,9 @@ class _MobileState extends State<_Mobile> {
     }
   }
 
-  Widget _buildMessage(String message) {
-    return Message(content: message);
-  }
+  // Widget _buildMessage(String message) {
+  //   return Message(content: message);
+  // }
 
   @override
   Widget build(BuildContext context) {
