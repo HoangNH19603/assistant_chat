@@ -13,21 +13,25 @@ class _Mobile extends StatefulWidget {
 class _MobileState extends State<_Mobile> {
   // final List<String> _myTypes = <String>[];
   final List<Message> _messages = <Message>[];
+  final ScrollController _controller = ScrollController();
+  final BardService _gemini = BardService(name: 'Google Gemini');
+  bool _needToScroll = false;
 
   // void _submitText(String content) => setState(() => _messages.add(Message.me(content)));
+
+  void _scrollToEnd() async => _controller.animateTo(_controller.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
 
   Future<void> _askQuestion(String question) async {
     setState(() => _messages.add(Message.me(question)));
     try {
-      final String response = await BardService().ask(question);
-      setState(() {
-        _messages.add(Message.bot(response));
-      });
+      final String response = await _gemini.ask(question);
+      setState(() => _messages.add(Message.bot(response)));
     } catch (e) {
-        _messages.add(Message.bot('Error: $e'));
-      setState(() {
-      });
+      setState(() => _messages.add(Message.bot('Error: $e')));
     }
+    // _controller.jumpTo(_controller.position.maxScrollExtent);
+    _needToScroll = true;
   }
 
   // Widget _buildMessage(String message) {
@@ -54,6 +58,11 @@ class _MobileState extends State<_Mobile> {
     //             });
     //       }),
     // );
+    if (_needToScroll) {
+      WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _scrollToEnd());
+      _needToScroll = false;
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       body: _messages.isEmpty
